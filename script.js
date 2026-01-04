@@ -522,29 +522,48 @@
         const imgW = img.naturalWidth;
         const imgH = img.naturalHeight;
 
-        // Calculate scale to "cover" the container (same as object-fit: cover)
+        // Calculate scales
         const scaleX = containerW / imgW;
         const scaleY = containerH / imgH;
+
+        // containScale = fit entire image in container (may have empty space)
+        // coverScale = fill container completely (may crop)
+        const containScale = Math.min(scaleX, scaleY);
         const coverScale = Math.max(scaleX, scaleY);
 
-        // Apply user zoom on top of cover scale
-        const userZoom = photoState.zoom / 100; // 1.0 to 2.0
-        const finalScale = coverScale * userZoom;
+        // User zoom: 100% = contain (show whole image), 200% = 2x contain
+        // We interpolate so that somewhere between 100-200% we hit cover scale
+        const userZoom = photoState.zoom / 100;
+        const finalScale = containScale * userZoom;
 
         // Calculate displayed image size
         const displayW = Math.round(imgW * finalScale);
         const displayH = Math.round(imgH * finalScale);
 
         // Calculate excess (how much image exceeds container = pan range)
-        const excessW = Math.max(0, displayW - containerW);
-        const excessH = Math.max(0, displayH - containerH);
+        // Can be negative if image is smaller than container
+        const excessW = displayW - containerW;
+        const excessH = displayH - containerH;
 
         // Calculate position based on posX/posY (0-100)
-        // posX=0: left edge aligned (left=0)
-        // posX=50: centered (left = -excessW/2)
-        // posX=100: right edge aligned (left = -excessW)
-        const left = -Math.round((photoState.posX / 100) * excessW);
-        const top = -Math.round((photoState.posY / 100) * excessH);
+        // Always center if image is smaller than container in that dimension
+        let left, top;
+
+        if (excessW > 0) {
+            // Image wider than container - can pan horizontally
+            left = -Math.round((photoState.posX / 100) * excessW);
+        } else {
+            // Image narrower than container - center it
+            left = Math.round(-excessW / 2);
+        }
+
+        if (excessH > 0) {
+            // Image taller than container - can pan vertically
+            top = -Math.round((photoState.posY / 100) * excessH);
+        } else {
+            // Image shorter than container - center it
+            top = Math.round(-excessH / 2);
+        }
 
         // Apply styles
         img.style.width = displayW + 'px';
