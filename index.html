@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSU Social Media Asset Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Small Screen Message -->
+    <div class="small-screen-message">
+        <div class="small-screen-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <h2>Larger Screen Required</h2>
+            <p>Please view this tool on a desktop or laptop for the best experience.</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel: Controls -->
+            <aside class="controls-panel">
+                <div class="controls-scroll">
+                    <div class="control-group">
+                        <label for="platform-select">Select Platform</label>
+                        <select id="platform-select">
+                            <option value="instagram">Instagram Post (1080 x 1080)</option>
+                            <option value="twitter">Twitter Card (1600 x 900)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="template-select">Template Style</label>
+                        <select id="template-select">
+                            <option value="gradient">Gradient Overlay</option>
+                            <option value="bars">Energy Bars</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="effect-select">Photo Effect</label>
+                        <select id="effect-select">
+                            <option value="none">None</option>
+                            <option value="photocopy">Photocopy Texture</option>
+                            <option value="duotone">Green Duotone</option>
+                            <option value="halftone">Halftone</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="headline-input">Headline</label>
+                        <input
+                            type="text"
+                            id="headline-input"
+                            placeholder="Enter your headline..."
+                            maxlength="60"
+                            value="Find Your Energy"
+                        >
+                        <span class="char-counter"><span id="headline-count">16</span>/60</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="subheadline-input">Sub-Headline</label>
+                        <textarea
+                            id="subheadline-input"
+                            placeholder="Enter your sub-headline..."
+                            maxlength="120"
+                        >Join us in building an inclusive community where every Ram can thrive.</textarea>
+                        <span class="char-counter"><span id="subheadline-count">71</span>/120</span>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="event-date">Event Date & Time <span class="optional-label">(Optional)</span></label>
+                        <div class="date-time-row">
+                            <input
+                                type="date"
+                                id="event-date"
+                                class="date-input"
+                            >
+                            <select id="event-time" class="time-input">
+                                <option value="">Time</option>
+                                <option value="08:00">8:00 AM</option>
+                                <option value="08:30">8:30 AM</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="09:30">9:30 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="10:30">10:30 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="17:30">5:30 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                                <option value="21:00">9:00 PM</option>
+                                <option value="21:30">9:30 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="cta-input">Shortlink</label>
+                        <input
+                            type="text"
+                            id="cta-input"
+                            placeholder="e.g., colostate.edu/inclusive"
+                            maxlength="50"
+                            value="colostate.edu/inclusive"
+                        >
+                    </div>
+
+                    <div class="control-group">
+                        <label>Upload Photo</label>
+                        <div class="file-upload-wrapper">
+                            <label for="image-input" class="file-upload-label" id="upload-label">
+                                <span class="file-upload-icon">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                </span>
+                                <span class="file-upload-text">
+                                    <strong>Click to upload</strong> or drag and drop<br>
+                                    JPG, PNG (Recommended: 1920x1080 or larger)
+                                </span>
+                                <span class="file-name" id="file-name"></span>
+                            </label>
+                            <input
+                                type="file"
+                                id="image-input"
+                                class="file-input"
+                                accept="image/jpeg,image/png,image/jpg"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="control-group photo-adjust-group" id="photo-adjust-group" style="display: none;">
+                        <label>Adjust Photo</label>
+                        <div class="zoom-control">
+                            <span class="zoom-label">Zoom</span>
+                            <input type="range" id="photo-zoom" min="100" max="200" value="100" class="zoom-slider">
+                            <span class="zoom-value" id="zoom-value">100%</span>
+                        </div>
+                        <p class="adjust-hint">Drag the photo in the preview to reposition</p>
+                        <div class="image-warning" id="image-warning" style="display: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            <span id="warning-text">Image may appear pixelated. Recommended minimum: <strong id="min-dimensions"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-wrapper">
+                    <button class="download-btn" id="download-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Image
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Right Panel: Preview -->
+            <section class="preview-panel">
+                <div class="preview-wrapper">
+                    <span class="preview-label">Live Preview</span>
+
+                    <div class="preview-container">
+                        <div class="preview-scaled" id="preview-scaled">
+                            <!-- Template: Gradient Style -->
+                            <div class="template template-gradient instagram" id="template">
+                                <!-- Background Image -->
+                                <div class="template-background" id="template-background">
+                                    <img src="" alt="" class="background-img" id="background-img">
+                                </div>
+
+                                <!-- Photo Effect Overlay -->
+                                <div class="photo-effect-overlay" id="photo-effect-overlay"></div>
+
+                                <!-- Content Overlay -->
+                                <div class="template-overlay">
+                                    <div class="template-content">
+                                        <p class="template-date" id="template-date"></p>
+                                        <h2 class="template-headline" id="template-headline">Find Your Energy</h2>
+                                        <p class="template-subheadline" id="template-subheadline">Join us in building an inclusive community where every Ram can thrive.</p>
+                                        <div class="template-footer">
+                                            <span class="template-cta" id="template-cta">colostate.edu/inclusive</span>
+                                            <img
+                                                src="brand-guidelines/logos/IncExc-VPIE-CSU-HWht.png"
+                                                alt="CSU Inclusive Excellence Logo"
+                                                class="template-logo"
+                                                id="template-logo"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Energy Bars (for alternate template) -->
+                                <div class="energy-bars" id="energy-bars">
+                                    <div class="bar bar-1"></div>
+                                    <div class="bar bar-2"></div>
+                                    <div class="bar bar-3"></div>
+                                    <div class="bar bar-4"></div>
+                                </div>
+
+                                <!-- Content Panel (for bars template) -->
+                                <div class="content-panel" id="content-panel">
+                                    <div class="panel-content">
+                                        <p class="template-date panel-date" id="panel-date"></p>
+                                        <h2 class="template-headline panel-headline" id="panel-headline">Find Your Energy</h2>
+                                        <p class="template-subheadline panel-subheadline" id="panel-subheadline">Join us in building an inclusive community where every Ram can thrive.</p>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <span class="template-cta panel-cta" id="panel-cta">colostate.edu/inclusive</span>
+                                        <img
+                                            src="brand-guidelines/logos/IncExc-VPIE-CSU-H357.png"
+                                            alt="CSU Inclusive Excellence Logo"
+                                            class="panel-logo"
+                                            id="panel-logo"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- html2canvas Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- App Logic -->
+    <script src="script.js"></script>
+</body>
+</html>

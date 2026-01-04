@@ -1,0 +1,1242 @@
+/* ===========================================
+   CSU Brand-Compliant Social Media Asset Generator
+   Modern Editorial Design System
+   =========================================== */
+
+/* Typography - DM Sans for UI, Montserrat for templates */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap');
+
+/* ===========================================
+   CSS Custom Properties (Brand Variables)
+   =========================================== */
+:root {
+    /* CSU Brand Colors - Primary */
+    --primary-color: #1E4D2B;
+    --primary-light: #2D6A3E;
+    --primary-dark: #163921;
+    --primary-subtle: rgba(30, 77, 43, 0.08);
+
+    /* CSU Brand Colors - Secondary Palette */
+    --secondary-color: #C8C372;
+    --secondary-bright: #D4CE7A;
+    --lime-green: #C5E026;
+    --orange-coral: #E8734A;
+    --purple-violet: #8B6A96;
+    --gold-yellow: #F9B233;
+    --burnt-orange: #D2691E;
+
+    /* Refined Neutrals */
+    --white: #FFFFFF;
+    --off-white: #FAFBFC;
+    --surface: #F4F6F8;
+    --border-light: #E8ECF0;
+    --border-medium: #D1D9E0;
+    --text-muted: #6B7A8C;
+    --text-secondary: #4A5568;
+    --text-primary: #1A202C;
+    --black: #000000;
+
+    /* Typography */
+    --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: 'Montserrat', 'Arial Black', sans-serif;
+    --font-body: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+
+    /* Spacing Scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+
+    /* Shadows - Refined depth system */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+    --shadow-focus: 0 0 0 3px rgba(30, 77, 43, 0.12);
+    --shadow-glow: 0 0 20px rgba(30, 77, 43, 0.15);
+
+    /* Transitions */
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+}
+
+/* ===========================================
+   Reset & Base Styles
+   =========================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    font-family: var(--font-ui);
+    background-color: var(--surface);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===========================================
+   App Layout
+   =========================================== */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at 0% 0%, rgba(30, 77, 43, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(200, 195, 114, 0.04) 0%, transparent 50%),
+        var(--surface);
+}
+
+/* ===========================================
+   Header - Refined & Minimal
+   =========================================== */
+.app-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    padding: var(--space-5) var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.app-header h1 {
+    font-family: var(--font-ui);
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    position: relative;
+    letter-spacing: -0.01em;
+}
+
+.app-header h1 svg {
+    opacity: 0.9;
+    width: 22px;
+    height: 22px;
+}
+
+.app-header .subtitle {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: var(--space-1);
+    position: relative;
+    letter-spacing: 0.01em;
+}
+
+/* ===========================================
+   Main Content Grid
+   =========================================== */
+.main-content {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ===========================================
+   Controls Panel - Left Side
+   =========================================== */
+.controls-panel {
+    background-color: var(--white);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+
+.controls-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-6);
+    padding-bottom: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* Section styling for control groups */
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.control-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Modern Input Styling */
+.control-group input[type="text"],
+.control-group textarea,
+.control-group select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    background-color: var(--white);
+    border: 1.5px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out);
+}
+
+.control-group input[type="text"]::placeholder,
+.control-group textarea::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.control-group input[type="text"]:hover,
+.control-group textarea:hover,
+.control-group select:hover {
+    border-color: var(--border-medium);
+    background-color: var(--off-white);
+}
+
+.control-group input[type="text"]:focus,
+.control-group textarea:focus,
+.control-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-focus);
+    background-color: var(--white);
+}
+
+.control-group textarea {
+    min-height: 88px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.control-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236B7A8C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-4) center;
+    padding-right: var(--space-10);
+}
+
+/* ===========================================
+   File Upload - Modern Dropzone
+   =========================================== */
+.file-upload-wrapper {
+    position: relative;
+}
+
+.file-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-4);
+    border: 2px dashed var(--border-medium);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    text-align: center;
+    background:
+        linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--primary-subtle) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.file-upload-label:hover {
+    border-color: var(--primary-color);
+    border-style: dashed;
+    transform: translateY(-1px);
+}
+
+.file-upload-label:hover::before {
+    opacity: 1;
+}
+
+.file-upload-label.has-file {
+    border-color: var(--primary-color);
+    border-style: solid;
+    background: var(--primary-subtle);
+}
+
+.file-upload-label.has-file::before {
+    opacity: 1;
+}
+
+.file-upload-icon {
+    margin-bottom: var(--space-3);
+    color: var(--text-muted);
+    position: relative;
+    transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.file-upload-label:hover .file-upload-icon {
+    transform: translateY(-2px);
+    color: var(--primary-color);
+}
+
+.file-upload-icon svg {
+    width: 36px;
+    height: 36px;
+    stroke-width: 1.25;
+}
+
+.file-upload-text {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    position: relative;
+}
+
+.file-upload-text strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.file-input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.file-name {
+    margin-top: var(--space-3);
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    position: relative;
+    padding: var(--space-1) var(--space-3);
+    background: var(--white);
+    border-radius: var(--radius-sm);
+}
+
+/* ===========================================
+   Preview Panel - Right Side
+   =========================================== */
+.preview-panel {
+    background: var(--surface);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+}
+
+.preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+}
+
+.preview-label {
+    font-family: var(--font-ui);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.preview-label::before,
+.preview-label::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--border-medium);
+}
+
+.preview-container {
+    background-color: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    position: relative;
+}
+
+.preview-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ===========================================
+   Social Media Template Styles
+   =========================================== */
+.template {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--primary-color);
+}
+
+.template.instagram {
+    width: 1080px;
+    height: 1080px;
+}
+
+.template.twitter {
+    width: 1600px;
+    height: 900px;
+}
+
+.template-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.background-img {
+    position: absolute;
+    cursor: grab;
+    transition: none;
+    /* Dimensions and position calculated by JS */
+}
+
+.background-img:active {
+    cursor: grabbing;
+}
+
+.background-img.dragging {
+    cursor: grabbing;
+}
+
+/* Photo Adjustment Controls */
+.photo-adjust-group {
+    background: var(--primary-subtle);
+    padding: var(--space-4) !important;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+}
+
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.zoom-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 40px;
+}
+
+.zoom-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border-light);
+    border-radius: 3px;
+    outline: none;
+}
+
+.zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.zoom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.zoom-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.zoom-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 45px;
+    text-align: right;
+}
+
+.adjust-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+}
+
+.image-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: var(--space-3);
+    padding: 10px 12px;
+    background: #FEF3CD;
+    border: 1px solid #F0C36D;
+    border-radius: var(--radius-sm);
+    color: #856404;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.image-warning svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    stroke: #B8860B;
+}
+
+.image-warning strong {
+    color: #6B4F00;
+}
+
+.template-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(30, 77, 43, 0.98) 0%, rgba(30, 77, 43, 0.92) 50%, rgba(30, 77, 43, 0.7) 75%, transparent 100%);
+    padding: 100px 60px 60px 60px;
+    z-index: 2;
+    min-height: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.template-content {
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Instagram Gradient - Large text for social media legibility */
+.template-headline {
+    font-family: var(--font-heading);
+    font-size: 80px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+
+.template-subheadline {
+    font-family: var(--font-body);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.35;
+    margin-bottom: 32px;
+    opacity: 0.95;
+    padding-right: 60px;
+}
+
+/* Instagram: Stack footer vertically */
+.template-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    margin-top: auto;
+}
+
+.template-cta {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+    opacity: 0.9;
+}
+
+.template-logo {
+    height: 140px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+/* Twitter-specific adjustments - horizontal footer works here */
+.template.twitter .template-overlay {
+    padding: 80px 80px 50px 80px;
+    min-height: 70%;
+}
+
+.template.twitter .template-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.template.twitter .template-headline {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.template.twitter .template-subheadline {
+    font-size: 28px;
+    margin-bottom: 24px;
+}
+
+.template.twitter .template-cta {
+    font-size: 24px;
+}
+
+.template.twitter .template-logo {
+    height: 120px;
+}
+
+/* ===========================================
+   Download Button - Modern & Polished
+   =========================================== */
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-8);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.download-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.download-btn:hover::before {
+    opacity: 1;
+}
+
+.download-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.download-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.download-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.download-btn:hover svg {
+    transform: translateY(2px);
+}
+
+/* Download wrapper - fixed to bottom of controls */
+.download-wrapper {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-4) var(--space-6);
+    background: var(--white);
+    border-top: 1px solid var(--border-light);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+.download-wrapper .download-btn {
+    width: 100%;
+}
+
+/* ===========================================
+   Preview Scaling
+   =========================================== */
+.preview-scaled {
+    transform-origin: top left;
+}
+
+.preview-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+/* ===========================================
+   Responsive Design
+   =========================================== */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .controls-panel {
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        max-height: 50vh;
+    }
+
+    .preview-panel {
+        padding: var(--space-6);
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        padding: var(--space-4) var(--space-5);
+    }
+
+    .app-header h1 {
+        font-size: 1.125rem;
+    }
+
+    .controls-panel {
+        padding: var(--space-5);
+    }
+}
+
+/* ===========================================
+   Utility Classes
+   =========================================== */
+.hidden {
+    display: none !important;
+}
+
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ===========================================
+   Animations
+   =========================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.control-group {
+    animation: fadeIn var(--duration-slow) var(--ease-out) backwards;
+}
+
+.control-group:nth-child(1) { animation-delay: 50ms; }
+.control-group:nth-child(2) { animation-delay: 100ms; }
+.control-group:nth-child(3) { animation-delay: 150ms; }
+.control-group:nth-child(4) { animation-delay: 200ms; }
+.control-group:nth-child(5) { animation-delay: 250ms; }
+
+.preview-container {
+    animation: fadeIn var(--duration-slow) var(--ease-out) 300ms backwards;
+}
+
+.download-btn {
+    animation: fadeIn var(--duration-slow) var(--ease-out) 400ms backwards;
+}
+
+/* ===========================================
+   Character Counter
+   =========================================== */
+.char-counter {
+    display: block;
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: var(--space-1);
+    font-variant-numeric: tabular-nums;
+}
+
+.char-counter.warning {
+    color: #E67E22;
+}
+
+.char-counter.limit {
+    color: #E74C3C;
+    font-weight: 600;
+}
+
+/* ===========================================
+   Date/Time Inputs
+   =========================================== */
+.optional-label {
+    font-weight: 400;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.6875rem;
+}
+
+.date-time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+.date-input,
+.time-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    background-color: var(--white);
+    border: 1.5px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.date-input:hover,
+.time-input:hover {
+    border-color: var(--border-medium);
+    background-color: var(--off-white);
+}
+
+.date-input:focus,
+.time-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-focus);
+    background-color: var(--white);
+}
+
+/* ===========================================
+   Template Date Display
+   =========================================== */
+.template-date {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.template-date:empty {
+    display: none;
+}
+
+/* ===========================================
+   Energy Bars Template (Alternate)
+   Split layout: Photo (2/3) | Color bars | Content (1/3)
+   =========================================== */
+
+/* Hide gradient overlay elements in bars template */
+.template-bars .template-overlay,
+.template-bars .template-logo {
+    display: none;
+}
+
+/* Base template background */
+.template-bars {
+    background: var(--white);
+}
+
+/* Photo takes left 50% */
+.template-bars .template-background {
+    width: 50%;
+    height: 100%;
+    left: 0;
+    right: auto;
+    z-index: 1;
+    position: absolute;
+}
+
+/* ===========================================
+   Photo Effect Overlays
+   =========================================== */
+.photo-effect-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    display: none;
+}
+
+/* For Energy Bars, effect only covers photo area (left 50%) */
+.template-bars .photo-effect-overlay {
+    width: 50%;
+}
+
+/* Photocopy Texture Effect */
+.template.effect-photocopy .photo-effect-overlay {
+    display: block;
+    background-image: url('brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg');
+    background-size: cover;
+    background-position: center;
+    mix-blend-mode: overlay;
+    opacity: 0.7;
+}
+
+/* Green Duotone Effect */
+.template.effect-duotone .background-img {
+    filter: grayscale(100%) contrast(1.1);
+}
+
+.template.effect-duotone .photo-effect-overlay {
+    display: block;
+    background-color: var(--primary-color);
+    mix-blend-mode: hard-light;
+    opacity: 1;
+}
+
+/* Halftone Effect - CSS dot pattern */
+.template.effect-halftone .photo-effect-overlay {
+    display: block;
+    background-image:
+        radial-gradient(circle, rgba(0,0,0,0.3) 1px, transparent 1px),
+        radial-gradient(circle, rgba(0,0,0,0.3) 1px, transparent 1px);
+    background-size: 6px 6px;
+    background-position: 0 0, 3px 3px;
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+}
+
+/* Vertical Color Bars - Between photo and content */
+.energy-bars {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 20px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    flex-direction: column;
+}
+
+.template-bars .energy-bars {
+    display: flex;
+}
+
+/* Individual color bars - stacked vertically */
+.bar {
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.bar-1 {
+    flex: 1;
+    background-color: var(--purple-violet);
+}
+
+.bar-2 {
+    flex: 1;
+    background-color: var(--lime-green);
+}
+
+.bar-3 {
+    flex: 1;
+    background-color: var(--primary-color);
+}
+
+.bar-4 {
+    flex: 1;
+    background-color: var(--orange-coral);
+}
+
+/* Content Panel - Right 50% */
+.content-panel {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: calc(50% - 20px);
+    height: 100%;
+    background: var(--white);
+    z-index: 3;
+    padding: 80px 60px;
+    box-sizing: border-box;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.template-bars .content-panel {
+    display: flex;
+}
+
+/* Decorative elements removed per user request */
+
+.panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Instagram Energy Bars - larger text for legibility */
+.panel-headline {
+    font-family: var(--font-heading);
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    color: var(--primary-color);
+}
+
+.panel-subheadline {
+    font-family: var(--font-body);
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    padding-right: 40px;
+}
+
+.panel-date {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--orange-coral);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.panel-date:empty {
+    display: none;
+}
+
+/* Instagram: Stack footer vertically */
+.panel-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: auto;
+    padding-top: 32px;
+}
+
+.panel-cta {
+    font-family: var(--font-body);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-color);
+    letter-spacing: 0.01em;
+}
+
+.panel-logo {
+    height: 110px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+/* Twitter adjustments for Bars template - 50/50 split */
+.template.twitter.template-bars .template-background {
+    width: 50%;
+}
+
+.template.twitter.template-bars .energy-bars {
+    left: 50%;
+    width: 16px;
+}
+
+.template.twitter.template-bars .content-panel {
+    width: calc(50% - 16px);
+    padding: 60px 50px;
+}
+
+/* Twitter decorative elements also removed */
+
+/* Twitter: horizontal footer since more width */
+.template.twitter.template-bars .panel-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.template.twitter.template-bars .panel-headline {
+    font-size: 56px;
+    margin-bottom: 20px;
+}
+
+.template.twitter.template-bars .panel-subheadline {
+    font-size: 24px;
+}
+
+.template.twitter.template-bars .panel-date {
+    font-size: 18px;
+}
+
+.template.twitter.template-bars .panel-cta {
+    font-size: 22px;
+}
+
+.template.twitter.template-bars .panel-logo {
+    height: 100px;
+}
+
+/* Animation for control groups - add more for new fields */
+.control-group:nth-child(6) { animation-delay: 300ms; }
+.control-group:nth-child(7) { animation-delay: 350ms; }
+
+/* ===========================================
+   Small Screen Message
+   =========================================== */
+.small-screen-message {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+}
+
+.small-screen-content {
+    text-align: center;
+    color: var(--white);
+    max-width: 320px;
+}
+
+.small-screen-content svg {
+    margin-bottom: var(--space-5);
+    opacity: 0.9;
+}
+
+.small-screen-content h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+    letter-spacing: -0.02em;
+}
+
+.small-screen-content p {
+    font-size: 1rem;
+    opacity: 0.85;
+    line-height: 1.5;
+}
+
+/* Show message and hide app on small screens */
+@media (max-width: 900px) {
+    .small-screen-message {
+        display: flex;
+    }
+
+    .app-container {
+        display: none !important;
+    }
+}
