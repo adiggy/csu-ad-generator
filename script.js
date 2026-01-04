@@ -522,46 +522,37 @@
         const imgW = img.naturalWidth;
         const imgH = img.naturalHeight;
 
-        // Calculate scales
+        // Calculate scale to "cover" the container (fills frame, may crop)
         const scaleX = containerW / imgW;
         const scaleY = containerH / imgH;
-
-        // containScale = fit entire image in container (may have empty space)
-        // coverScale = fill container completely (may crop)
-        const containScale = Math.min(scaleX, scaleY);
         const coverScale = Math.max(scaleX, scaleY);
 
-        // User zoom: 100% = contain (show whole image), 200% = 2x contain
-        // We interpolate so that somewhere between 100-200% we hit cover scale
+        // User zoom: 100% = cover (fills frame), <100% = zoom out, >100% = zoom in
         const userZoom = photoState.zoom / 100;
-        const finalScale = containScale * userZoom;
+        const finalScale = coverScale * userZoom;
 
         // Calculate displayed image size
         const displayW = Math.round(imgW * finalScale);
         const displayH = Math.round(imgH * finalScale);
 
         // Calculate excess (how much image exceeds container = pan range)
-        // Can be negative if image is smaller than container
+        // Can be negative if zoomed out below cover scale
         const excessW = displayW - containerW;
         const excessH = displayH - containerH;
 
         // Calculate position based on posX/posY (0-100)
-        // Always center if image is smaller than container in that dimension
+        // Center if image is smaller than container in that dimension
         let left, top;
 
         if (excessW > 0) {
-            // Image wider than container - can pan horizontally
             left = -Math.round((photoState.posX / 100) * excessW);
         } else {
-            // Image narrower than container - center it
             left = Math.round(-excessW / 2);
         }
 
         if (excessH > 0) {
-            // Image taller than container - can pan vertically
             top = -Math.round((photoState.posY / 100) * excessH);
         } else {
-            // Image shorter than container - center it
             top = Math.round(-excessH / 2);
         }
 
