@@ -87,6 +87,7 @@
     // Store the base64 logos for export
     let logoWhiteBase64 = null;
     let logoColorBase64 = null;
+    let photocopyTextureBase64 = null;
 
     // Photo adjustment state
     let photoState = {
@@ -619,7 +620,7 @@
     }
 
     // ===========================================
-    // Logo Preloading (Convert to Base64 for export)
+    // Asset Preloading (Convert to Base64 for export)
     // ===========================================
     function preloadLogos() {
         // Preload white logo
@@ -649,6 +650,78 @@
             elements.panelLogo.src = logoColorBase64;
         };
         imgColor.src = config.logos.color;
+
+        // Preload photocopy texture
+        const imgTexture = new Image();
+        imgTexture.crossOrigin = 'anonymous';
+        imgTexture.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = imgTexture.width;
+            canvas.height = imgTexture.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imgTexture, 0, 0);
+            photocopyTextureBase64 = canvas.toDataURL('image/jpeg');
+        };
+        imgTexture.src = 'brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg';
+    }
+
+    // ===========================================
+    // Apply Photocopy Effect (for export)
+    // ===========================================
+    async function applyPhotocopyEffect(sourceCanvas, templateStyle, platformConfig) {
+        return new Promise((resolve) => {
+            const textureImg = new Image();
+            textureImg.onload = function() {
+                // Create a new canvas for the result
+                const resultCanvas = document.createElement('canvas');
+                resultCanvas.width = sourceCanvas.width;
+                resultCanvas.height = sourceCanvas.height;
+                const ctx = resultCanvas.getContext('2d');
+
+                // Draw the original rendered content
+                ctx.drawImage(sourceCanvas, 0, 0);
+
+                // Calculate the photo area dimensions based on template
+                let photoAreaWidth = platformConfig.width;
+                let photoAreaHeight = platformConfig.height;
+                let photoAreaX = 0;
+
+                if (templateStyle === 'bars') {
+                    // Energy bars: photo is left 50%
+                    photoAreaWidth = Math.floor(platformConfig.width * 0.5);
+                }
+
+                // Create a temporary canvas for the texture
+                const textureCanvas = document.createElement('canvas');
+                textureCanvas.width = photoAreaWidth;
+                textureCanvas.height = photoAreaHeight;
+                const textureCtx = textureCanvas.getContext('2d');
+
+                // Draw texture scaled to cover the photo area
+                const scale = Math.max(photoAreaWidth / textureImg.width, photoAreaHeight / textureImg.height);
+                const scaledWidth = textureImg.width * scale;
+                const scaledHeight = textureImg.height * scale;
+                const offsetX = (photoAreaWidth - scaledWidth) / 2;
+                const offsetY = (photoAreaHeight - scaledHeight) / 2;
+                textureCtx.drawImage(textureImg, offsetX, offsetY, scaledWidth, scaledHeight);
+
+                // Apply the texture with overlay blend mode
+                ctx.save();
+                ctx.globalCompositeOperation = 'overlay';
+                ctx.globalAlpha = 0.7;
+
+                // Only apply to the photo area
+                ctx.beginPath();
+                ctx.rect(photoAreaX, 0, photoAreaWidth, photoAreaHeight);
+                ctx.clip();
+
+                ctx.drawImage(textureCanvas, photoAreaX, 0);
+                ctx.restore();
+
+                resolve(resultCanvas);
+            };
+            textureImg.src = photocopyTextureBase64;
+        });
     }
 
     // ===========================================
@@ -671,14 +744,22 @@
             // Get current platform and template for filename
             const platform = elements.platformSelect.value;
             const templateStyle = elements.templateSelect.value;
+            const effect = elements.effectSelect.value;
             const platformConfig = config.platforms[platform];
 
             // Reset scale temporarily for accurate export
             const originalTransform = elements.previewScaled.style.transform;
             elements.previewScaled.style.transform = 'scale(1)';
 
+            // For photocopy effect, hide the CSS overlay and apply manually via canvas
+            const effectOverlay = document.getElementById('photo-effect-overlay');
+            const originalOverlayDisplay = effectOverlay.style.display;
+            if (effect === 'photocopy') {
+                effectOverlay.style.display = 'none';
+            }
+
             // Use html2canvas to capture the template
-            const canvas = await html2canvas(elements.template, {
+            let canvas = await html2canvas(elements.template, {
                 scale: 1,
                 useCORS: true,
                 allowTaint: true,
@@ -687,6 +768,16 @@
                 height: platformConfig.height,
                 logging: false
             });
+
+            // Restore overlay visibility
+            if (effect === 'photocopy') {
+                effectOverlay.style.display = originalOverlayDisplay;
+            }
+
+            // Apply photocopy texture effect manually using canvas
+            if (effect === 'photocopy' && photocopyTextureBase64) {
+                canvas = await applyPhotocopyEffect(canvas, templateStyle, platformConfig);
+            }
 
             // Restore scale
             elements.previewScaled.style.transform = originalTransform;
