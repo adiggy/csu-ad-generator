@@ -1,0 +1,8 @@
+node_modules
+.git
+.DS_Store
+*.DS_Store
+*.pdf
+*.ai
+brand-guidelines/CSU_FindYourEnergyGuidelines_v1.2.pdf
+brand-guidelines/textures/*.ai

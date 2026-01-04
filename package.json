@@ -1,0 +1,16 @@
+{
+  "name": "csu-ad-generator",
+  "version": "1.0.0",
+  "description": "CSU Social Media Asset Generator",
+  "main": "script.js",
+  "scripts": {
+    "start": "npx serve .",
+    "deploy": "npx vercel --prod"
+  },
+  "keywords": ["csu", "social-media", "generator"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vercel": "^50.1.3"
+  }
+}
