@@ -584,6 +584,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    pointer-events: none;
 }
 
 .template-content {
