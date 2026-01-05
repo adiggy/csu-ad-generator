@@ -75,7 +75,14 @@
                     </div>
 
                     <div class="control-group">
-                        <label for="event-date">Event Date & Time <span class="optional-label">(Optional)</span></label>
+                        <div class="toggle-row">
+                            <label for="show-date-toggle" class="toggle-label">Show Date & Time</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="show-date-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="date-time-fields" id="date-time-fields">
                         <div class="date-time-row">
                             <input
                                 type="date"
@@ -113,6 +120,7 @@
                                 <option value="21:00">9:00 PM</option>
                                 <option value="21:30">9:30 PM</option>
                             </select>
+                        </div>
                         </div>
                     </div>
 

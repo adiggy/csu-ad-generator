@@ -55,7 +55,11 @@
         photoZoom: document.getElementById('photo-zoom'),
         zoomValue: document.getElementById('zoom-value'),
         imageWarning: document.getElementById('image-warning'),
-        minDimensions: document.getElementById('min-dimensions')
+        minDimensions: document.getElementById('min-dimensions'),
+
+        // Date/time toggle
+        showDateToggle: document.getElementById('show-date-toggle'),
+        dateTimeFields: document.getElementById('date-time-fields')
     };
 
     // ===========================================
@@ -167,6 +171,9 @@
         // Date/time inputs
         elements.eventDate.addEventListener('change', updateDateTime);
         elements.eventTime.addEventListener('change', updateDateTime);
+
+        // Date/time toggle
+        elements.showDateToggle.addEventListener('change', handleDateToggle);
 
         // Platform selection
         elements.platformSelect.addEventListener('change', handlePlatformChange);
@@ -286,6 +293,23 @@
 
         elements.templateDate.textContent = displayText;
         elements.panelDate.textContent = displayText;
+    }
+
+    // ===========================================
+    // Date/Time Toggle Handler
+    // ===========================================
+    function handleDateToggle() {
+        const isVisible = elements.showDateToggle.checked;
+
+        if (isVisible) {
+            elements.dateTimeFields.classList.remove('hidden');
+            updateDateTime(); // Restore the date display
+        } else {
+            elements.dateTimeFields.classList.add('hidden');
+            // Clear the date display in the template
+            elements.templateDate.textContent = '';
+            elements.panelDate.textContent = '';
+        }
     }
 
     // ===========================================
