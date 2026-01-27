@@ -1192,9 +1192,9 @@
                 email: document.getElementById('feedback-email').value,
                 browser: info.browser,
                 os: info.os,
-                screenSize: info.screen,
-                windowSize: info.window,
-                currentSettings: info.currentSettings,
+                screenSize: info.screenSize,
+                windowSize: info.windowSize,
+                currentSettings: `${info.platform}, ${info.template}, ${info.effect}`,
                 timestamp: new Date().toISOString()
             };
 
