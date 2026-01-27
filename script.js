@@ -31,6 +31,7 @@
         template: document.getElementById('template'),
         templateBackground: document.getElementById('template-background'),
         backgroundImg: document.getElementById('background-img'),
+        photoEffectOverlay: document.getElementById('photo-effect-overlay'),
         templateHeadline: document.getElementById('template-headline'),
         templateSubheadline: document.getElementById('template-subheadline'),
         templateCta: document.getElementById('template-cta'),
@@ -59,7 +60,18 @@
 
         // Date/time toggle
         showDateToggle: document.getElementById('show-date-toggle'),
-        dateTimeFields: document.getElementById('date-time-fields')
+        dateTimeFields: document.getElementById('date-time-fields'),
+
+        // Preview zoom controls
+        previewPanel: document.getElementById('preview-panel'),
+        previewZoomSlider: document.getElementById('preview-zoom-slider'),
+        zoomNotch: document.getElementById('zoom-notch')
+    };
+
+    // Preview zoom state
+    let previewZoom = {
+        fitScale: 1,      // Scale that fits the preview area (e.g., 0.5 = 50%)
+        currentScale: 1   // Current display scale
     };
 
     // ===========================================
@@ -92,6 +104,7 @@
     let logoWhiteBase64 = null;
     let logoColorBase64 = null;
     let photocopyTextureBase64 = null;
+    let energyBarsBase64 = null;
 
     // Photo adjustment state
     let photoState = {
@@ -110,13 +123,17 @@
     // ===========================================
     function init() {
         setupEventListeners();
+        elements.previewZoomSlider.value = 100; // Start at fit
         updatePreviewScale();
         preloadLogos();
         updateCharCounters();
+        updateHeadline();
+        updateSubheadline();
+        updateCta();
         loadDefaultPhoto();
         setDefaultDate();
 
-        // Handle window resize
+        // Handle window resize - recalculate scales
         window.addEventListener('resize', debounce(updatePreviewScale, 150));
     }
 
@@ -198,6 +215,9 @@
         // Photo zoom slider
         elements.photoZoom.addEventListener('input', handleZoomChange);
 
+        // Preview zoom controls
+        elements.previewZoomSlider.addEventListener('input', handlePreviewZoomSlider);
+
         // Photo drag to pan
         elements.backgroundImg.addEventListener('mousedown', handlePhotoDragStart);
         document.addEventListener('mousemove', handlePhotoDrag);
@@ -249,21 +269,21 @@
     // Text Update Functions
     // ===========================================
     function updateHeadline() {
-        const text = elements.headlineInput.value.trim() || 'Your Headline Here';
+        const text = elements.headlineInput.value.trim() || 'Your Headline';
         elements.templateHeadline.textContent = text;
         elements.panelHeadline.textContent = text;
         updateHeadlineCounter();
     }
 
     function updateSubheadline() {
-        const text = elements.subheadlineInput.value.trim() || 'Your sub-headline text goes here.';
+        const text = elements.subheadlineInput.value.trim() || 'Your sub-headline goes here';
         elements.templateSubheadline.textContent = text;
         elements.panelSubheadline.textContent = text;
         updateSubheadlineCounter();
     }
 
     function updateCta() {
-        const text = elements.ctaInput.value.trim() || 'colostate.edu/inclusive';
+        const text = elements.ctaInput.value.trim() || 'colostate.edu/link';
         elements.templateCta.textContent = text;
         elements.panelCta.textContent = text;
     }
@@ -362,7 +382,8 @@
         // Add new platform class
         elements.template.classList.add(platform);
 
-        // Update preview scaling
+        // Reset to fit when changing platforms
+        elements.previewZoomSlider.value = 100;
         updatePreviewScale();
 
         // Recalculate photo dimensions for new container size
@@ -379,25 +400,56 @@
         const platform = elements.platformSelect.value;
         const platformConfig = config.platforms[platform];
 
-        // Get available dimensions (preview panel size minus padding and button space)
-        const previewPanel = document.querySelector('.preview-panel');
+        // Get available dimensions (preview panel size minus padding and controls)
+        const previewPanel = elements.previewPanel;
         const availableWidth = previewPanel.clientWidth - 64;
-        const availableHeight = previewPanel.clientHeight - 80; // Space for label + button
+        const availableHeight = previewPanel.clientHeight - 120; // Space for header + controls
 
-        // Calculate scale factor to fit within available space
+        // Calculate fit scale factor (scale that makes template fit the preview area)
         const scaleX = availableWidth / platformConfig.width;
         const scaleY = availableHeight / platformConfig.height;
-        const scale = Math.min(scaleX, scaleY);
+        previewZoom.fitScale = Math.min(scaleX, scaleY);
+
+        // Slider logic:
+        // - Slider max (100) = fit scale (fills preview area)
+        // - Slider min (10) = 10% of fit scale (much smaller)
+        // - The actual scale = (sliderValue / 100) * fitScale
+
+        const sliderValue = parseInt(elements.previewZoomSlider.value);
+        const scale = (sliderValue / 100) * previewZoom.fitScale;
+
+        // Position the 100% notch
+        // 100% actual = scale of 1.0
+        // Slider position for 100% = (1.0 / fitScale) * 100
+        const notchSliderPosition = (1.0 / previewZoom.fitScale) * 100;
+
+        if (notchSliderPosition >= 10 && notchSliderPosition <= 100) {
+            // Notch is within slider range - position it
+            // Slider track goes from 10 to 100, so we need to map to percentage of track width
+            const trackPercent = ((notchSliderPosition - 10) / 90) * 100;
+            elements.zoomNotch.style.left = trackPercent + '%';
+            elements.zoomNotch.style.display = 'block';
+        } else {
+            // 100% is outside the reachable range - hide the notch
+            elements.zoomNotch.style.display = 'none';
+        }
 
         // Apply scaling
         elements.previewScaled.style.transform = `scale(${scale})`;
         elements.previewScaled.style.width = `${platformConfig.width}px`;
         elements.previewScaled.style.height = `${platformConfig.height}px`;
 
-        // Set container dimensions to scaled size to prevent overflow
+        // Set container dimensions to scaled size
         const previewContainer = document.querySelector('.preview-container');
         previewContainer.style.width = `${platformConfig.width * scale}px`;
         previewContainer.style.height = `${platformConfig.height * scale}px`;
+    }
+
+    // ===========================================
+    // Preview Zoom Handlers
+    // ===========================================
+    function handlePreviewZoomSlider() {
+        updatePreviewScale();
     }
 
     // ===========================================
@@ -609,6 +661,8 @@
             requiredWidth = Math.ceil(platformConfig.width * 0.5);
         }
 
+        // Gradient template: photo fills full area (solid overlay covers bottom)
+
         // Account for zoom - higher zoom means we need more pixels
         requiredWidth = Math.ceil(requiredWidth * zoom);
         requiredHeight = Math.ceil(requiredHeight * zoom);
@@ -697,6 +751,52 @@
             photocopyTextureBase64 = canvas.toDataURL('image/jpeg');
         };
         imgTexture.src = 'brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg';
+
+        // Preload energy bars image
+        const imgBars = new Image();
+        imgBars.crossOrigin = 'anonymous';
+        imgBars.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = imgBars.width;
+            canvas.height = imgBars.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imgBars, 0, 0);
+            energyBarsBase64 = canvas.toDataURL('image/jpeg');
+            // Update the energy bars element to use base64 for export
+            const energyBarsEl = document.getElementById('energy-bars');
+            if (energyBarsEl) {
+                energyBarsEl.style.backgroundImage = `url(${energyBarsBase64})`;
+            }
+        };
+        imgBars.src = 'brand-guidelines/textures/energy-bars.jpg';
+    }
+
+    // ===========================================
+    // Get Photo Area Dimensions
+    // ===========================================
+    function getPhotoAreaDimensions(templateStyle, platformConfig) {
+        let photoAreaWidth = platformConfig.width;
+        let photoAreaHeight = platformConfig.height;
+        let photoAreaX = 0;
+        let photoAreaY = 0;
+
+        if (templateStyle === 'bars') {
+            const platform = elements.platformSelect.value;
+            if (platform === 'instagram') {
+                // Instagram bars: photo is top portion (get actual height from DOM)
+                const bgElement = elements.templateBackground;
+                photoAreaHeight = bgElement.offsetHeight;
+            } else {
+                // Twitter bars: photo is left 50%
+                photoAreaWidth = Math.floor(platformConfig.width * 0.5);
+            }
+        } else {
+            // Gradient template: photo is top portion (get actual height from DOM)
+            const bgElement = elements.templateBackground;
+            photoAreaHeight = bgElement.offsetHeight;
+        }
+
+        return { photoAreaWidth, photoAreaHeight, photoAreaX, photoAreaY };
     }
 
     // ===========================================
@@ -715,15 +815,9 @@
                 // Draw the original rendered content
                 ctx.drawImage(sourceCanvas, 0, 0);
 
-                // Calculate the photo area dimensions based on template
-                let photoAreaWidth = platformConfig.width;
-                let photoAreaHeight = platformConfig.height;
-                let photoAreaX = 0;
-
-                if (templateStyle === 'bars') {
-                    // Energy bars: photo is left 50%
-                    photoAreaWidth = Math.floor(platformConfig.width * 0.5);
-                }
+                // Get photo area dimensions
+                const { photoAreaWidth, photoAreaHeight, photoAreaX, photoAreaY } =
+                    getPhotoAreaDimensions(templateStyle, platformConfig);
 
                 // Create a temporary canvas for the texture
                 const textureCanvas = document.createElement('canvas');
@@ -746,15 +840,120 @@
 
                 // Only apply to the photo area
                 ctx.beginPath();
-                ctx.rect(photoAreaX, 0, photoAreaWidth, photoAreaHeight);
+                ctx.rect(photoAreaX, photoAreaY, photoAreaWidth, photoAreaHeight);
                 ctx.clip();
 
-                ctx.drawImage(textureCanvas, photoAreaX, 0);
+                ctx.drawImage(textureCanvas, photoAreaX, photoAreaY);
                 ctx.restore();
 
                 resolve(resultCanvas);
             };
             textureImg.src = photocopyTextureBase64;
+        });
+    }
+
+    // ===========================================
+    // Apply Duotone Effect (for export)
+    // ===========================================
+    async function applyDuotoneEffect(sourceCanvas, templateStyle, platformConfig) {
+        return new Promise((resolve) => {
+            const resultCanvas = document.createElement('canvas');
+            resultCanvas.width = sourceCanvas.width;
+            resultCanvas.height = sourceCanvas.height;
+            const ctx = resultCanvas.getContext('2d');
+
+            // Draw the original rendered content
+            ctx.drawImage(sourceCanvas, 0, 0);
+
+            // Get photo area dimensions
+            const { photoAreaWidth, photoAreaHeight, photoAreaX, photoAreaY } =
+                getPhotoAreaDimensions(templateStyle, platformConfig);
+
+            // Get the photo area image data
+            const imageData = ctx.getImageData(photoAreaX, photoAreaY, photoAreaWidth, photoAreaHeight);
+            const data = imageData.data;
+
+            // CSU Green color
+            const greenR = 30, greenG = 77, greenB = 43;
+
+            // Apply grayscale and then hard-light blend with green
+            for (let i = 0; i < data.length; i += 4) {
+                // Convert to grayscale with slight contrast boost
+                let gray = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+                gray = Math.min(255, Math.max(0, (gray - 128) * 1.1 + 128)); // contrast
+
+                // Hard-light blend mode with green
+                const blendHardLight = (base, blend) => {
+                    if (blend < 128) {
+                        return (2 * base * blend) / 255;
+                    } else {
+                        return 255 - (2 * (255 - base) * (255 - blend)) / 255;
+                    }
+                };
+
+                data[i] = blendHardLight(gray, greenR);
+                data[i + 1] = blendHardLight(gray, greenG);
+                data[i + 2] = blendHardLight(gray, greenB);
+                // Alpha stays the same
+            }
+
+            ctx.putImageData(imageData, photoAreaX, photoAreaY);
+            resolve(resultCanvas);
+        });
+    }
+
+    // ===========================================
+    // Apply Halftone Effect (for export)
+    // ===========================================
+    async function applyHalftoneEffect(sourceCanvas, templateStyle, platformConfig) {
+        return new Promise((resolve) => {
+            const resultCanvas = document.createElement('canvas');
+            resultCanvas.width = sourceCanvas.width;
+            resultCanvas.height = sourceCanvas.height;
+            const ctx = resultCanvas.getContext('2d');
+
+            // Draw the original rendered content
+            ctx.drawImage(sourceCanvas, 0, 0);
+
+            // Get photo area dimensions
+            const { photoAreaWidth, photoAreaHeight, photoAreaX, photoAreaY } =
+                getPhotoAreaDimensions(templateStyle, platformConfig);
+
+            // Create halftone dot pattern
+            ctx.save();
+
+            // Clip to photo area
+            ctx.beginPath();
+            ctx.rect(photoAreaX, photoAreaY, photoAreaWidth, photoAreaHeight);
+            ctx.clip();
+
+            // Draw dot pattern with multiply blend
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.globalAlpha = 0.6;
+
+            const dotSize = 3;
+            const spacing = 6;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+
+            for (let y = photoAreaY; y < photoAreaY + photoAreaHeight; y += spacing) {
+                for (let x = photoAreaX; x < photoAreaX + photoAreaWidth; x += spacing) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, dotSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Second offset layer
+            for (let y = photoAreaY + spacing / 2; y < photoAreaY + photoAreaHeight; y += spacing) {
+                for (let x = photoAreaX + spacing / 2; x < photoAreaX + photoAreaWidth; x += spacing) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, dotSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            ctx.restore();
+            resolve(resultCanvas);
         });
     }
 
@@ -785,11 +984,19 @@
             const originalTransform = elements.previewScaled.style.transform;
             elements.previewScaled.style.transform = 'scale(1)';
 
-            // For photocopy effect, hide the CSS overlay and apply manually via canvas
+            // For effects that need manual canvas processing, hide CSS effects
             const effectOverlay = document.getElementById('photo-effect-overlay');
             const originalOverlayDisplay = effectOverlay.style.display;
-            if (effect === 'photocopy') {
+            const backgroundImg = elements.backgroundImg;
+
+            // Temporarily remove effect class to disable CSS filters
+            const hadDuotoneClass = elements.template.classList.contains('effect-duotone');
+            const hadPhotocopyClass = elements.template.classList.contains('effect-photocopy');
+            const hadHalftoneClass = elements.template.classList.contains('effect-halftone');
+
+            if (effect === 'photocopy' || effect === 'duotone' || effect === 'halftone') {
                 effectOverlay.style.display = 'none';
+                elements.template.classList.remove('effect-duotone', 'effect-photocopy', 'effect-halftone');
             }
 
             // Use html2canvas to capture the template
@@ -803,14 +1010,33 @@
                 logging: false
             });
 
-            // Restore overlay visibility
-            if (effect === 'photocopy') {
+            // Restore CSS effects
+            if (effect === 'photocopy' || effect === 'duotone' || effect === 'halftone') {
                 effectOverlay.style.display = originalOverlayDisplay;
+            }
+            if (hadDuotoneClass) {
+                elements.template.classList.add('effect-duotone');
+            }
+            if (hadPhotocopyClass) {
+                elements.template.classList.add('effect-photocopy');
+            }
+            if (hadHalftoneClass) {
+                elements.template.classList.add('effect-halftone');
             }
 
             // Apply photocopy texture effect manually using canvas
             if (effect === 'photocopy' && photocopyTextureBase64) {
                 canvas = await applyPhotocopyEffect(canvas, templateStyle, platformConfig);
+            }
+
+            // Apply duotone effect manually using canvas
+            if (effect === 'duotone') {
+                canvas = await applyDuotoneEffect(canvas, templateStyle, platformConfig);
+            }
+
+            // Apply halftone effect manually using canvas
+            if (effect === 'halftone') {
+                canvas = await applyHalftoneEffect(canvas, templateStyle, platformConfig);
             }
 
             // Restore scale
@@ -875,12 +1101,148 @@
     document.head.appendChild(style);
 
     // ===========================================
+    // Feedback Form Functionality
+    // ===========================================
+    function initFeedbackForm() {
+        const feedbackBtn = document.getElementById('feedback-btn');
+        const feedbackModal = document.getElementById('feedback-modal');
+        const feedbackClose = document.getElementById('feedback-close');
+        const feedbackForm = document.getElementById('feedback-form');
+        const systemInfoDisplay = document.getElementById('system-info-display');
+        const feedbackSuccess = document.getElementById('feedback-success');
+
+        if (!feedbackBtn || !feedbackModal) return;
+
+        // Gather system info
+        function getSystemInfo() {
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            let os = 'Unknown';
+
+            // Detect browser
+            if (ua.includes('Firefox')) browser = 'Firefox';
+            else if (ua.includes('Edg')) browser = 'Edge';
+            else if (ua.includes('Chrome')) browser = 'Chrome';
+            else if (ua.includes('Safari')) browser = 'Safari';
+
+            // Detect OS
+            if (ua.includes('Windows')) os = 'Windows';
+            else if (ua.includes('Mac')) os = 'macOS';
+            else if (ua.includes('Linux')) os = 'Linux';
+            else if (ua.includes('Android')) os = 'Android';
+            else if (ua.includes('iOS')) os = 'iOS';
+
+            return {
+                browser: browser,
+                os: os,
+                screenSize: `${window.screen.width}x${window.screen.height}`,
+                windowSize: `${window.innerWidth}x${window.innerHeight}`,
+                platform: elements.platformSelect?.value || 'N/A',
+                template: elements.templateSelect?.value || 'N/A',
+                effect: elements.effectSelect?.value || 'N/A',
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // Display system info
+        function displaySystemInfo() {
+            const info = getSystemInfo();
+            systemInfoDisplay.innerHTML = `
+                Browser: ${info.browser}<br>
+                OS: ${info.os}<br>
+                Screen: ${info.screenSize}<br>
+                Window: ${info.windowSize}<br>
+                Current Settings: ${info.platform}, ${info.template}, ${info.effect}
+            `;
+        }
+
+        // Open modal
+        feedbackBtn.addEventListener('click', () => {
+            feedbackModal.classList.add('active');
+            displaySystemInfo();
+            feedbackForm.style.display = 'block';
+            feedbackSuccess.style.display = 'none';
+        });
+
+        // Close modal
+        feedbackClose.addEventListener('click', () => {
+            feedbackModal.classList.remove('active');
+        });
+
+        // Close on backdrop click
+        feedbackModal.addEventListener('click', (e) => {
+            if (e.target === feedbackModal) {
+                feedbackModal.classList.remove('active');
+            }
+        });
+
+        // Handle form submission
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = feedbackForm.querySelector('.feedback-submit');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+
+            const info = getSystemInfo();
+            const feedbackData = {
+                type: document.getElementById('feedback-type').value,
+                message: document.getElementById('feedback-message').value,
+                email: document.getElementById('feedback-email').value,
+                browser: info.browser,
+                os: info.os,
+                screenSize: info.screen,
+                windowSize: info.window,
+                currentSettings: info.currentSettings,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(feedbackData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit feedback');
+                }
+
+                // Show success message
+                feedbackForm.style.display = 'none';
+                feedbackSuccess.style.display = 'block';
+
+                // Reset form
+                feedbackForm.reset();
+
+                // Close modal after delay
+                setTimeout(() => {
+                    feedbackModal.classList.remove('active');
+                }, 2000);
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                alert('Failed to submit feedback. Please try again.');
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    // ===========================================
     // Initialize App
     // ===========================================
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initFeedbackForm();
+        });
     } else {
         init();
+        initFeedbackForm();
     }
 
 })();

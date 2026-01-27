@@ -37,7 +37,7 @@
                     <div class="control-group">
                         <label for="template-select">Template Style</label>
                         <select id="template-select">
-                            <option value="gradient">Gradient Overlay</option>
+                            <option value="gradient">Green Background</option>
                             <option value="bars">Energy Bars</option>
                         </select>
                     </div>
@@ -59,9 +59,8 @@
                             id="headline-input"
                             placeholder="Enter your headline..."
                             maxlength="60"
-                            value="Find Your Energy"
                         >
-                        <span class="char-counter"><span id="headline-count">16</span>/60</span>
+                        <span class="char-counter"><span id="headline-count">0</span>/60</span>
                     </div>
 
                     <div class="control-group">
@@ -70,8 +69,8 @@
                             id="subheadline-input"
                             placeholder="Enter your sub-headline..."
                             maxlength="120"
-                        >Join us in building an inclusive community where every Ram can thrive.</textarea>
-                        <span class="char-counter"><span id="subheadline-count">71</span>/120</span>
+                        ></textarea>
+                        <span class="char-counter"><span id="subheadline-count">0</span>/120</span>
                     </div>
 
                     <div class="control-group">
@@ -131,7 +130,6 @@
                             id="cta-input"
                             placeholder="e.g., colostate.edu/inclusive"
                             maxlength="50"
-                            value="colostate.edu/inclusive"
                         >
                     </div>
 
@@ -193,9 +191,18 @@
             </aside>
 
             <!-- Right Panel: Preview -->
-            <section class="preview-panel">
+            <section class="preview-panel" id="preview-panel">
                 <div class="preview-wrapper">
-                    <span class="preview-label">Live Preview</span>
+                    <div class="preview-header">
+                        <div class="preview-zoom-control">
+                            <span class="zoom-label-small">Smaller</span>
+                            <div class="zoom-slider-wrapper">
+                                <input type="range" id="preview-zoom-slider" min="10" max="100" value="100" class="preview-zoom-slider">
+                                <div class="zoom-notch" id="zoom-notch" title="Actual pixel size (100%)"></div>
+                            </div>
+                            <span class="zoom-label-fit">Fit</span>
+                        </div>
+                    </div>
 
                     <div class="preview-container">
                         <div class="preview-scaled" id="preview-scaled">
@@ -204,25 +211,26 @@
                                 <!-- Background Image -->
                                 <div class="template-background" id="template-background">
                                     <img src="" alt="" class="background-img" id="background-img">
+                                    <!-- Photo Effect Overlay -->
+                                    <div class="photo-effect-overlay" id="photo-effect-overlay"></div>
                                 </div>
-
-                                <!-- Photo Effect Overlay -->
-                                <div class="photo-effect-overlay" id="photo-effect-overlay"></div>
 
                                 <!-- Content Overlay -->
                                 <div class="template-overlay">
                                     <div class="template-content">
-                                        <p class="template-date" id="template-date"></p>
-                                        <h2 class="template-headline" id="template-headline">Find Your Energy</h2>
-                                        <p class="template-subheadline" id="template-subheadline">Join us in building an inclusive community where every Ram can thrive.</p>
+                                        <div class="template-text">
+                                            <p class="template-date" id="template-date"></p>
+                                            <h2 class="template-headline" id="template-headline">Your Headline</h2>
+                                            <p class="template-subheadline" id="template-subheadline">Your sub-headline goes here</p>
+                                        </div>
                                         <div class="template-footer">
-                                            <span class="template-cta" id="template-cta">colostate.edu/inclusive</span>
                                             <img
                                                 src="brand-guidelines/logos/IncExc-VPIE-CSU-HWht.png"
                                                 alt="CSU Inclusive Excellence Logo"
                                                 class="template-logo"
                                                 id="template-logo"
                                             >
+                                            <span class="template-cta" id="template-cta">colostate.edu/link</span>
                                         </div>
                                     </div>
                                 </div>
@@ -239,11 +247,11 @@
                                 <div class="content-panel" id="content-panel">
                                     <div class="panel-content">
                                         <p class="template-date panel-date" id="panel-date"></p>
-                                        <h2 class="template-headline panel-headline" id="panel-headline">Find Your Energy</h2>
-                                        <p class="template-subheadline panel-subheadline" id="panel-subheadline">Join us in building an inclusive community where every Ram can thrive.</p>
+                                        <h2 class="template-headline panel-headline" id="panel-headline">Your Headline</h2>
+                                        <p class="template-subheadline panel-subheadline" id="panel-subheadline">Your sub-headline goes here</p>
                                     </div>
                                     <div class="panel-footer">
-                                        <span class="template-cta panel-cta" id="panel-cta">colostate.edu/inclusive</span>
+                                        <span class="template-cta panel-cta" id="panel-cta">colostate.edu/link</span>
                                         <img
                                             src="brand-guidelines/logos/IncExc-VPIE-CSU-H357.png"
                                             alt="CSU Inclusive Excellence Logo"
@@ -258,6 +266,59 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Feedback Button & Modal -->
+    <button class="feedback-btn" id="feedback-btn" title="Send Feedback">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+    </button>
+
+    <div class="feedback-modal" id="feedback-modal">
+        <div class="feedback-content">
+            <button class="feedback-close" id="feedback-close">&times;</button>
+            <h3>Send Feedback</h3>
+            <p class="feedback-subtitle">Help us improve this tool</p>
+
+            <form id="feedback-form">
+                <div class="feedback-field">
+                    <label for="feedback-type">Feedback Type</label>
+                    <select id="feedback-type" required>
+                        <option value="">Select type...</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="feedback-field">
+                    <label for="feedback-message">Description</label>
+                    <textarea id="feedback-message" rows="4" placeholder="Please describe the issue or suggestion..." required></textarea>
+                </div>
+
+                <div class="feedback-field">
+                    <label for="feedback-email">Email (optional)</label>
+                    <input type="email" id="feedback-email" placeholder="your@email.com">
+                </div>
+
+                <div class="feedback-system-info" id="feedback-system-info">
+                    <label>System Info (auto-captured)</label>
+                    <div class="system-info-display" id="system-info-display"></div>
+                </div>
+
+                <button type="submit" class="feedback-submit">Submit Feedback</button>
+            </form>
+
+            <div class="feedback-success" id="feedback-success" style="display: none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <h4>Thank you!</h4>
+                <p>Your feedback has been recorded.</p>
+            </div>
+        </div>
     </div>
 
     <!-- html2canvas Library -->

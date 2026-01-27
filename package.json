@@ -10,6 +10,9 @@
   "keywords": ["csu", "social-media", "generator"],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  },
   "devDependencies": {
     "vercel": "^50.1.3"
   }
