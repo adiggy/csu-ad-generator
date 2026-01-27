@@ -1159,6 +1159,7 @@ body {
 /* Green background template: date overlaps photo (50% above, 50% below line) */
 .template-gradient .template-overlay {
     position: relative;
+    z-index: 2;
 }
 
 .template-gradient .template-date {
