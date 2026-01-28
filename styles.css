@@ -1171,6 +1171,7 @@ body {
     transform: translateY(-50%);
     margin: 0;
     z-index: 10;
+    isolation: isolate;
 }
 
 .template-gradient .template-text {
@@ -1241,7 +1242,7 @@ body {
 /* Photocopy Texture Effect */
 .template.effect-photocopy .photo-effect-overlay {
     display: block;
-    background-image: url('brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg');
+    background-image: url('brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg?v=2');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
