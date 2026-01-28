@@ -464,6 +464,12 @@
             elements.templateCta.textContent = '';
             elements.panelCta.textContent = '';
         }
+
+        // Reposition floating date and photo after layout change
+        setTimeout(() => {
+            positionFloatingDate();
+            updatePhotoTransform();
+        }, 0);
     }
 
     // ===========================================
