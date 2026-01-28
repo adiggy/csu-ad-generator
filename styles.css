@@ -569,6 +569,8 @@ body {
 .template-gradient {
     display: flex;
     flex-direction: column;
+    position: relative;
+    isolation: isolate;
 }
 
 .template-gradient .template-background {
@@ -577,7 +579,6 @@ body {
     min-height: 0;
     overflow: hidden;
     z-index: 1;
-    isolation: isolate;
 }
 
 .template-gradient .template-overlay {
@@ -1170,8 +1171,7 @@ body {
     left: 60px;
     transform: translateY(-50%);
     margin: 0;
-    z-index: 10;
-    isolation: isolate;
+    z-index: 100;
 }
 
 .template-gradient .template-text {
