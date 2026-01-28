@@ -1165,7 +1165,18 @@ body {
     z-index: 2;
 }
 
-.template-gradient .template-date {
+/* Hide the inner date for gradient template - use floating date instead */
+.template-gradient .template-date-inner {
+    display: none;
+}
+
+/* Floating date badge - direct child of template, above all effects */
+.floating-date {
+    display: none;
+}
+
+.template-gradient .floating-date {
+    display: block;
     position: absolute;
     top: 0;
     left: 60px;
@@ -1174,12 +1185,12 @@ body {
     z-index: 100;
 }
 
-.template-gradient .template-text {
-    padding-top: 70px;
+.template-gradient.twitter .floating-date {
+    left: 70px;
 }
 
-.template-gradient.twitter .template-date {
-    left: 70px;
+.template-gradient .template-text {
+    padding-top: 70px;
 }
 
 .template-gradient.twitter .template-text {

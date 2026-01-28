@@ -36,6 +36,7 @@
         templateSubheadline: document.getElementById('template-subheadline'),
         templateCta: document.getElementById('template-cta'),
         templateDate: document.getElementById('template-date'),
+        floatingDate: document.getElementById('floating-date'),
         templateLogo: document.getElementById('template-logo'),
 
         // Template elements - Bars style (panel)
@@ -133,8 +134,14 @@
         loadDefaultPhoto();
         setDefaultDate();
 
-        // Handle window resize - recalculate scales
-        window.addEventListener('resize', debounce(updatePreviewScale, 150));
+        // Position floating date after layout settles
+        setTimeout(positionFloatingDate, 100);
+
+        // Handle window resize - recalculate scales and floating date
+        window.addEventListener('resize', debounce(() => {
+            updatePreviewScale();
+            positionFloatingDate();
+        }, 150));
     }
 
     // ===========================================
@@ -312,6 +319,7 @@
         }
 
         elements.templateDate.textContent = displayText;
+        elements.floatingDate.textContent = displayText;
         elements.panelDate.textContent = displayText;
     }
 
@@ -328,6 +336,7 @@
             elements.dateTimeFields.classList.add('hidden');
             // Clear the date display in the template
             elements.templateDate.textContent = '';
+            elements.floatingDate.textContent = '';
             elements.panelDate.textContent = '';
         }
     }
@@ -348,10 +357,11 @@
             elements.template.classList.add('template-bars');
         }
 
-        // Recalculate photo dimensions for new container size
+        // Recalculate photo dimensions and reposition floating date
         setTimeout(() => {
             updatePhotoTransform();
             checkImageQuality();
+            positionFloatingDate();
         }, 0);
     }
 
@@ -386,10 +396,11 @@
         elements.previewZoomSlider.value = 100;
         updatePreviewScale();
 
-        // Recalculate photo dimensions for new container size
+        // Recalculate photo dimensions and reposition floating date
         setTimeout(() => {
             updatePhotoTransform();
             checkImageQuality();
+            positionFloatingDate();
         }, 0);
     }
 
@@ -450,6 +461,27 @@
     // ===========================================
     function handlePreviewZoomSlider() {
         updatePreviewScale();
+    }
+
+    // ===========================================
+    // Floating Date Position (for gradient template)
+    // ===========================================
+    function positionFloatingDate() {
+        const templateStyle = elements.templateSelect.value;
+        if (templateStyle !== 'gradient') return;
+
+        const templateOverlay = document.querySelector('.template-overlay');
+        const template = elements.template;
+
+        if (!templateOverlay || !template) return;
+
+        // Get the top position of template-overlay relative to template
+        const templateRect = template.getBoundingClientRect();
+        const overlayRect = templateOverlay.getBoundingClientRect();
+        const topPosition = overlayRect.top - templateRect.top;
+
+        // Position floating date at the boundary
+        elements.floatingDate.style.top = topPosition + 'px';
     }
 
     // ===========================================
