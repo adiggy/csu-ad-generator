@@ -120,17 +120,65 @@
                                 <option value="21:30">9:30 PM</option>
                             </select>
                         </div>
+                        <div class="end-time-row" id="end-time-row" style="display: none;">
+                            <div class="toggle-row compact">
+                                <label for="show-end-time" class="toggle-label small">Add End Time</label>
+                                <label class="toggle-switch small">
+                                    <input type="checkbox" id="show-end-time">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <select id="event-end-time" class="time-input" aria-label="Event End Time" style="display: none;">
+                                <option value="">End Time</option>
+                                <option value="08:00">8:00 AM</option>
+                                <option value="08:30">8:30 AM</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="09:30">9:30 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="10:30">10:30 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="17:30">5:30 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                                <option value="21:00">9:00 PM</option>
+                                <option value="21:30">9:30 PM</option>
+                            </select>
+                        </div>
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label for="cta-input">Shortlink</label>
-                        <input
-                            type="text"
-                            id="cta-input"
-                            placeholder="e.g., colostate.edu/inclusive"
-                            maxlength="50"
-                        >
+                        <div class="toggle-row">
+                            <label for="show-link-toggle" class="toggle-label">Show Shortlink</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="show-link-toggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="link-fields" id="link-fields">
+                            <input
+                                type="text"
+                                id="cta-input"
+                                placeholder="e.g., colostate.edu/inclusive"
+                                maxlength="50"
+                            >
+                        </div>
                     </div>
 
                     <div class="control-group">
@@ -179,14 +227,22 @@
                 </div>
 
                 <div class="download-wrapper">
-                    <button class="download-btn" id="download-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Download Image
-                    </button>
+                    <div class="download-row">
+                        <select id="format-select" class="format-select" aria-label="File Format">
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPG</option>
+                            <option value="pdf">PDF</option>
+                            <option value="gif">GIF</option>
+                        </select>
+                        <button class="download-btn" id="download-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download
+                        </button>
+                    </div>
                 </div>
             </aside>
 
@@ -328,6 +384,9 @@
 
     <!-- html2canvas Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- jsPDF Library for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- App Logic -->
     <script src="script.js"></script>

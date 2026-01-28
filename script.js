@@ -62,6 +62,16 @@
         // Date/time toggle
         showDateToggle: document.getElementById('show-date-toggle'),
         dateTimeFields: document.getElementById('date-time-fields'),
+        endTimeRow: document.getElementById('end-time-row'),
+        showEndTime: document.getElementById('show-end-time'),
+        eventEndTime: document.getElementById('event-end-time'),
+
+        // Link toggle
+        showLinkToggle: document.getElementById('show-link-toggle'),
+        linkFields: document.getElementById('link-fields'),
+
+        // Download format
+        formatSelect: document.getElementById('format-select'),
 
         // Preview zoom controls
         previewPanel: document.getElementById('preview-panel'),
@@ -134,6 +144,9 @@
         loadDefaultPhoto();
         setDefaultDate();
 
+        // Show end time row since date toggle is checked by default
+        elements.endTimeRow.style.display = 'flex';
+
         // Position floating date after layout settles
         setTimeout(positionFloatingDate, 100);
 
@@ -194,10 +207,20 @@
 
         // Date/time inputs
         elements.eventDate.addEventListener('change', updateDateTime);
-        elements.eventTime.addEventListener('change', updateDateTime);
+        elements.eventTime.addEventListener('change', () => {
+            updateDateTime();
+            filterEndTimeOptions();
+        });
+        elements.eventEndTime.addEventListener('change', updateDateTime);
 
         // Date/time toggle
         elements.showDateToggle.addEventListener('change', handleDateToggle);
+
+        // End time toggle
+        elements.showEndTime.addEventListener('change', handleEndTimeToggle);
+
+        // Link toggle
+        elements.showLinkToggle.addEventListener('change', handleLinkToggle);
 
         // Platform selection
         elements.platformSelect.addEventListener('change', handlePlatformChange);
@@ -280,6 +303,8 @@
         elements.templateHeadline.textContent = text;
         elements.panelHeadline.textContent = text;
         updateHeadlineCounter();
+        // Reposition floating date after text reflows
+        setTimeout(positionFloatingDate, 0);
     }
 
     function updateSubheadline() {
@@ -287,6 +312,8 @@
         elements.templateSubheadline.textContent = text;
         elements.panelSubheadline.textContent = text;
         updateSubheadlineCounter();
+        // Reposition floating date after text reflows
+        setTimeout(positionFloatingDate, 0);
     }
 
     function updateCta() {
@@ -301,12 +328,13 @@
     function updateDateTime() {
         const dateValue = elements.eventDate.value;
         const timeValue = elements.eventTime.value;
+        const endTimeValue = elements.showEndTime.checked ? elements.eventEndTime.value : '';
 
         let displayText = '';
 
         if (dateValue) {
             const date = new Date(dateValue + 'T00:00:00');
-            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
             displayText = date.toLocaleDateString('en-US', options);
         }
 
@@ -315,7 +343,17 @@
             const date = new Date();
             date.setHours(parseInt(hours), parseInt(minutes));
             const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-            displayText += displayText ? ` • ${timeStr}` : timeStr;
+
+            // Check for end time
+            if (endTimeValue) {
+                const [endHours, endMinutes] = endTimeValue.split(':');
+                const endDate = new Date();
+                endDate.setHours(parseInt(endHours), parseInt(endMinutes));
+                const endTimeStr = endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                displayText += displayText ? ` • ${timeStr} – ${endTimeStr}` : `${timeStr} – ${endTimeStr}`;
+            } else {
+                displayText += displayText ? ` • ${timeStr}` : timeStr;
+            }
         }
 
         elements.templateDate.textContent = displayText;
@@ -331,13 +369,100 @@
 
         if (isVisible) {
             elements.dateTimeFields.classList.remove('hidden');
+            elements.endTimeRow.style.display = 'flex';
             updateDateTime(); // Restore the date display
         } else {
             elements.dateTimeFields.classList.add('hidden');
+            elements.endTimeRow.style.display = 'none';
             // Clear the date display in the template
             elements.templateDate.textContent = '';
             elements.floatingDate.textContent = '';
             elements.panelDate.textContent = '';
+        }
+
+        // Recalculate photo dimensions after layout change
+        setTimeout(() => {
+            updatePhotoTransform();
+        }, 0);
+    }
+
+    // ===========================================
+    // End Time Toggle Handler
+    // ===========================================
+    function handleEndTimeToggle() {
+        const showEndTime = elements.showEndTime.checked;
+
+        if (showEndTime) {
+            elements.eventEndTime.style.display = 'block';
+            filterEndTimeOptions();
+        } else {
+            elements.eventEndTime.style.display = 'none';
+            elements.eventEndTime.value = '';
+        }
+        updateDateTime();
+    }
+
+    // ===========================================
+    // Filter End Time Options
+    // ===========================================
+    function filterEndTimeOptions() {
+        const startTimeValue = elements.eventTime.value;
+        const endTimeSelect = elements.eventEndTime;
+        const options = endTimeSelect.options;
+
+        // Reset all options to visible first
+        for (let i = 0; i < options.length; i++) {
+            options[i].disabled = false;
+            options[i].style.display = '';
+        }
+
+        if (!startTimeValue) {
+            return;
+        }
+
+        // Parse start time to minutes for comparison
+        const [startHours, startMinutes] = startTimeValue.split(':').map(Number);
+        const startTotalMinutes = startHours * 60 + startMinutes;
+
+        // Disable/hide options that are at or before start time
+        for (let i = 0; i < options.length; i++) {
+            const optionValue = options[i].value;
+            if (!optionValue) continue; // Skip the placeholder option
+
+            const [optHours, optMinutes] = optionValue.split(':').map(Number);
+            const optTotalMinutes = optHours * 60 + optMinutes;
+
+            if (optTotalMinutes <= startTotalMinutes) {
+                options[i].disabled = true;
+                options[i].style.display = 'none';
+            }
+        }
+
+        // If current end time is now invalid, reset it
+        if (endTimeSelect.value) {
+            const [endHours, endMinutes] = endTimeSelect.value.split(':').map(Number);
+            const endTotalMinutes = endHours * 60 + endMinutes;
+            if (endTotalMinutes <= startTotalMinutes) {
+                endTimeSelect.value = '';
+                updateDateTime();
+            }
+        }
+    }
+
+    // ===========================================
+    // Link Toggle Handler
+    // ===========================================
+    function handleLinkToggle() {
+        const isVisible = elements.showLinkToggle.checked;
+
+        if (isVisible) {
+            elements.linkFields.classList.remove('hidden');
+            updateCta(); // Restore the CTA display
+        } else {
+            elements.linkFields.classList.add('hidden');
+            // Clear the CTA display in the template
+            elements.templateCta.textContent = '';
+            elements.panelCta.textContent = '';
         }
     }
 
@@ -1119,12 +1244,45 @@
             // Restore scale
             elements.previewScaled.style.transform = originalTransform;
 
-            // Create download link
-            const link = document.createElement('a');
+            // Get selected format
+            const format = elements.formatSelect.value;
             const timestamp = new Date().toISOString().slice(0, 10);
-            link.download = `csu-${platform}-${templateStyle}-${timestamp}.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
+            const baseFilename = `csu-${platform}-${templateStyle}-${timestamp}`;
+
+            // Create download based on format
+            const link = document.createElement('a');
+
+            if (format === 'png') {
+                link.download = `${baseFilename}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            } else if (format === 'jpg') {
+                link.download = `${baseFilename}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.92);
+                link.click();
+            } else if (format === 'gif') {
+                // GIF uses PNG with .gif extension (browsers don't truly support GIF encoding)
+                link.download = `${baseFilename}.gif`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            } else if (format === 'pdf') {
+                // Use jsPDF for PDF export
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL('image/png', 1.0);
+
+                // Calculate PDF dimensions (72 DPI = points)
+                const pdfWidth = platformConfig.width * 72 / 96; // Convert px to points
+                const pdfHeight = platformConfig.height * 72 / 96;
+
+                const pdf = new jsPDF({
+                    orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+                    unit: 'pt',
+                    format: [pdfWidth, pdfHeight]
+                });
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`${baseFilename}.pdf`);
+            }
 
             // Show success briefly
             btn.innerHTML = `
