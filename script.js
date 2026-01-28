@@ -475,13 +475,20 @@
 
         if (!templateOverlay || !template) return;
 
+        // Get the current scale from the transform
+        const transformStyle = elements.previewScaled.style.transform;
+        const scaleMatch = transformStyle.match(/scale\(([^)]+)\)/);
+        const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+
         // Get the top position of template-overlay relative to template
+        // Divide by scale to get the unscaled position
         const templateRect = template.getBoundingClientRect();
         const overlayRect = templateOverlay.getBoundingClientRect();
-        const topPosition = overlayRect.top - templateRect.top;
+        const scaledTopPosition = overlayRect.top - templateRect.top;
+        const unscaledTopPosition = scaledTopPosition / scale;
 
         // Position floating date at the boundary
-        elements.floatingDate.style.top = topPosition + 'px';
+        elements.floatingDate.style.top = unscaledTopPosition + 'px';
     }
 
     // ===========================================
