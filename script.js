@@ -1031,6 +1031,23 @@
                 elements.template.classList.remove('effect-duotone', 'effect-photocopy', 'effect-halftone');
             }
 
+            // For gradient template with effects, capture date badge position for later compositing
+            const floatingDate = elements.floatingDate;
+            let dateBadgeData = null;
+            if (templateStyle === 'gradient' && (effect === 'photocopy' || effect === 'duotone' || effect === 'halftone')) {
+                // Get the date badge position relative to template
+                const templateRect = elements.template.getBoundingClientRect();
+                const dateRect = floatingDate.getBoundingClientRect();
+                dateBadgeData = {
+                    x: dateRect.left - templateRect.left,
+                    y: dateRect.top - templateRect.top,
+                    width: dateRect.width,
+                    height: dateRect.height
+                };
+                // Hide the date for initial capture
+                floatingDate.style.visibility = 'hidden';
+            }
+
             // Use html2canvas to capture the template
             let canvas = await html2canvas(elements.template, {
                 scale: 1,
@@ -1069,6 +1086,27 @@
             // Apply halftone effect manually using canvas
             if (effect === 'halftone') {
                 canvas = await applyHalftoneEffect(canvas, templateStyle, platformConfig);
+            }
+
+            // Composite date badge on top if we hid it earlier
+            if (dateBadgeData && floatingDate.textContent) {
+                // Restore visibility for capture
+                floatingDate.style.visibility = 'visible';
+
+                // Capture just the date badge
+                const dateBadgeCanvas = await html2canvas(floatingDate, {
+                    scale: 1,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+
+                // Draw date badge on top of the final canvas
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(dateBadgeCanvas, dateBadgeData.x, dateBadgeData.y);
+            } else if (floatingDate) {
+                floatingDate.style.visibility = 'visible';
             }
 
             // Restore scale
