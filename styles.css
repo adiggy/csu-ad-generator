@@ -576,6 +576,8 @@ body {
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    z-index: 1;
+    isolation: isolate;
 }
 
 .template-gradient .template-overlay {
@@ -1211,6 +1213,8 @@ body {
     right: auto;
     z-index: 1;
     position: absolute;
+    overflow: hidden;
+    isolation: isolate;
 }
 
 /* ===========================================
@@ -1238,7 +1242,7 @@ body {
 .template.effect-photocopy .photo-effect-overlay {
     display: block;
     background-image: url('brand-guidelines/textures/CSU_FindYourEnergy_PhotocopyTexture_RGB.jpg');
-    background-size: 100% 100%;
+    background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     mix-blend-mode: overlay;
@@ -1467,6 +1471,7 @@ body {
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    isolation: isolate;
 }
 
 .template.instagram.template-bars .energy-bars {
